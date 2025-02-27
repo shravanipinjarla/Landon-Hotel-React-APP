@@ -1,9 +1,25 @@
-import React from 'react';
-import menuLinksData from './data/menu_links.json'
+import React, { useState, useEffect } from 'react';
+// import menuLinksData from './data/menu_links.json'
 
 const Header = () => {
-    return (
-        <header id="intro">
+  const [menuLinksData, setMenuLinksData] = useState([]);
+
+  const loadMenuLinksData = async() => {
+    // Query the API Gateway
+    const resp = await fetch('https://a6lnno41t7.execute-api.us-east-1.amazonaws.com/Production/menu_links');
+    let jsonData = await resp.json();
+
+    // Assign response data to our state variable
+    setMenuLinksData(jsonData);
+  }
+
+  useEffect(() => {
+    // Load the menu links data from the API Gateway
+    loadMenuLinksData();
+  }, []);
+
+  return (
+    <header id="intro">
       <article className="fullheight">
         <div className="hgroup">
           <h1>Landon Hotel</h1>
@@ -17,21 +33,15 @@ const Header = () => {
           <div className="brand"><a href="#welcome">Landon <span>Hotel</span></a></div>
           <ul>
             {
-                menuLinksData.map((link) =>
+              menuLinksData.map((link) =>
                 <li><a className={`icon ${link.class}`} href={link.href}><span>{link.text}</span></a></li>
-                )
-
+              )
             }
-            {/* <li><a className="icon info" href="#hotelinfo"><span>info</span></a></li>
-            <li><a className="icon rooms" href="#rooms"><span>rooms</span></a></li>
-            <li><a className="icon dining" href="#dining"><span>dining</span></a></li>
-            <li><a className="icon events" href="#events"><span>events</span></a></li>
-            <li><a className="icon attractions" href="#attractions"><span>attractions</span></a></li> */}
           </ul>
         </div>
       </nav>
     </header>
-    );
+  );
 }
 
 export default Header;
